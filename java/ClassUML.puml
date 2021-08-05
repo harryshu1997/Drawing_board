@@ -1,0 +1,179 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class MainActivity{
+- Public Attributes transferring data to Handwrite
+Bitmap newBitmap
+ArrayList<Point> newPoints
+ArrayList<Forb> newForbs
+- Internal Attributes
+TextView URL
+TextView scaleRatio
++ ImageButton robotrak  (Get image from web)
++ FloatingActionButton fab (Get image from gallery)
+ArrayList<Forb> decodeForbs
+ArrayList<Point> decodePoints
+NumberPicker np
+NumberPicker npGap
+NumberPicker npSize
+*BaseLoaderCallback mLoaderCallback  (for loading OpenCV)
+--
+onCreate(Bundle savedInstanceState)
+*void onResume()   (for loading OpenCV)
+boolean isImgUrl(String url)
+boolean isTrueURL(String url)
+void goToUrl (String url)
+void initPermissions()
+void onActivityResult(int requestCode, int resultCode, Intent data) (Decode data from gallery)
+void getPasteString()
+void getImage(final String path, final HttpCallBackListener listener)
+Bitmap createBitmapThumbnail(Bitmap bitmap,boolean needRecycler)
+void onConfigurationChanged(Configuration newConfig)
+}
+
+class Forb{
+float x
+float y
+float originalX
+float originalY
+int radius
+int originalRadius
+--
+Getter and Setter ...
+boolean checkCollideF(ArrayList<Forb> array, float px, float py, int radius)
+boolean checkCollideP(ArrayList<Point> array, float px, float py, int radius)
+boolean checkCollidePF(ArrayList<Point> array, float px, float py, int radius)
+boolean checkWithin(ArrayList<Forb> array, float px, float py, float buff)
+Forb getCollide(ArrayList<Forb> array, float px, float py)
+static int distance(float x, float y, float xx, float yy)
+}
+
+class Point{
+float x
+float y
+float originalX
+float originalY
+int radius
+int originalRadius
+--
+Getter and Setter ...
+Point getClosest(float xx, float yy, ArrayList<Point> array)
+static boolean checkCollide(ArrayList<Forb> farray, ArrayList<Point> array, float px, float py, int Pbuff, int Fbuff)
+static boolean checkWithin(ArrayList<Point> array, float px, float py, float buff)
+static boolean checkWithin_new(ArrayList<Point> array, float px, float py, float buff)
+static Point getCollide(ArrayList<Point> array, float px, float py)
+}
+
+class HomeFragmet{
+private HomeViewModel homeViewModel
+private HandWrite handwrite = null
+private ImageButton clear = null
+private ImageButton point = null
+private ImageButton path = null
+private ImageButton eraser = null
+private ImageButton group = null
+private ImageButton ring_circle = null
+private ImageButton capture = null
+private ImageButton forb = null
+private ImageButton scale = null
+private RelativeLayout layout = null
+private MyViewModel viewModel
+private ScaleRatioVR scaleRatioVR = Constant.scaleRatioVR
+private Dialog mDialog
+--
+View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+void outPutFile()
+void testViewSnapshot(View view)
+Bitmap mergeBitmap(Bitmap backBitmap, Bitmap frontBitmap)
+static Bitmap scaleImage(Bitmap bm, int newWidth, int newHeight)
+}
+
+class Handwrite{
+// Soooo many attributes! look into it for details
+...
+--
+// Sooo many function for drawing! look into it for details
+}
+
+class Constant{
+public static final int IO_BUFFER_SIZE = 1024
+public static final int draw_line = 0
+public static final int draw_circle = 1
+public static final int draw_path = 2
+public static final int eraser = 3
+public static final int group_circle = 4
+public static final int draw_forb = 5
+public static final int draw_scale = 6
+public static final int ring_circle = 7
+public static final int delete = 100
+public static int forbSize = 100
+public static int gap = 5
+public static float scale = 1.0f
+public static int PRadius = 10
+public static ScaleRatioVR scaleRatioVR = new ScaleRatioVR()
+--
+Getter and Setter ...
+}
+
+class ScaleRatioVR{
+private float scale = 1.0f
+private ScaleRatioVR.ChangeListener listener
+--
+Getter and Setter
+}
+
+
+class MyViewModel{
+    MutableLiveData<Boolean> isForb
+    MutableLiveData<Integer> forbSize
+    MutableLiveData<Integer> PGap
+    MutableLiveData<Boolean> isGap
+    MutableLiveData<Integer> PSize
+    MutableLiveData<Boolean> isSize
+    MutableLiveData<Float> scaleRatio
+    --
+    Getter and Setter ...
+}
+
+class Utils{
+// Helper functions for handling bitmap
+Bitmap ReadBitmapById(Context context, int resId)
+Bitmap getBitmap(Bitmap bitmap, int screenWidth, int screenHight)
+Bitmap scaleImage(byte[] buffer, float size)
+Bitmap convertToThumb(byte[] buffer, float size)
+byte[] readBitmap(Bitmap bmp)
+byte[] readBitmapFromBuffer(byte[] buffer, float size)
+Bitmap decodeStream(Context context, Intent data, float size)
+Bitmap scaleImage(Bitmap bm, int newWidth, int newHeight)
+Bitmap fitBitmap(Bitmap target, int newWidth)
+Bitmap createRepeater(int width, Bitmap src)
+Bitmap compressImage(Bitmap image)
+Bitmap getImage(Bitmap image)
+Bitmap ReadBitmapById(Context context, int drawableId, int screenWidth, int screenHight)
+Bitmap mergeBitmap(Bitmap backBitmap, Bitmap frontBitmap)
+Bitmap mergeBitmap_LR(Bitmap leftBitmap, Bitmap rightBitmap, boolean isBaseMax)
+Bitmap mergeBitmap_TB(Bitmap topBitmap, Bitmap bottomBitmap, boolean isBaseMax)
+Dialog createLoadingDialog(Context context, String msg)
+void closeDialog(Dialog mDialogUtils)
+}
+
+
+
+interface HttpCallBackListener
+MainActivity <- HttpCallBackListener
+MainActivity <..> MyViewModel
+HomeFragmet <..> MyViewModel
+MainActivity <... Utils
+Handwrite <... Utils
+MainActivity <.. Point
+Handwrite <.. Point
+Handwrite <.. Forb
+MainActivity <.. Forb
+HomeFragmet <..> MainActivity
+HomeFragmet <.. Handwrite
+Handwrite <-- Constant
+Handwrite <-- ScaleRatioVR
+HomeFragmet <-- ScaleRatioVR
+
+
+@enduml

@@ -1,0 +1,48 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+participant MainActivity order 10
+participant MyViewModel order 20
+participant HomeFragment order 30
+participant HandWrite order 40
+participant System order 50
+
+group Starting APP
+MainActivity -> HomeFragment: Start Fragment
+HomeFragment -> HandWrite: Start Drawing
+HandWrite -> System: Get Default Image and drawables
+HandWrite <-- System: Image get
+HomeFragment <-- HandWrite: Finish Drawing
+MainActivity <-- HomeFragment: Fragment Started
+end
+
+group MainActivity Transferring Data
+autonumber
+MainActivity -> MyViewModel: Onclick and OnValueChanged (NumberPicker)
+MyViewModel -> HomeFragment: Transferring Onclick|OnValueChanged data
+HomeFragment -> HandWrite: Get data and Draw
+HomeFragment <-- HandWrite: OK
+end
+
+group Get Image from Outside
+autonumber
+MainActivity -> HandWrite: Get Image from Web or Gallery and Redraw
+HomeFragment <-- HandWrite: OK
+end
+
+group Change Paint Type
+autonumber
+HomeFragment -> HandWrite: ImageButton Onclick Change Paint Type
+HomeFragment <-- HandWrite: OK
+end
+
+autonumber stop
+HandWrite -> HandWrite: Drawing as wish
+note left
+Drawing Continues until Quit
+end note
+
+System ->O MainActivity: Shut Down
+
+@enduml
